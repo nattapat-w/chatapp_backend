@@ -1,7 +1,7 @@
 package dto
 
 type UserDTO struct {
-	UserName    string
+	Username    string
 	Password    string
 	DisplayName string
 }

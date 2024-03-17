@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/nattapat-w/chatapp/core/user/model/request"
+	"github.com/nattapat-w/chatapp/core/user/model"
 	"github.com/nattapat-w/chatapp/core/user/port/service"
 )
 
@@ -15,7 +15,7 @@ func NewUserController(userService service.UserService) *UserController {
 }
 
 func (uc *UserController) Register(c *fiber.Ctx) error {
-	var registerRequest request.RegisterRequest
+	var registerRequest model.RegisterRequest
 	if err := c.BodyParser(&registerRequest); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
 	}

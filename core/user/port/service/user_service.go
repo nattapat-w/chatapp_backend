@@ -1,10 +1,9 @@
 package service
 
 import (
-	"github.com/nattapat-w/chatapp/core/user/model/request"
-	"github.com/nattapat-w/chatapp/core/user/model/response"
+	"github.com/nattapat-w/chatapp/core/user/model"
 )
 
 type UserService interface {
-	Register(request *request.RegisterRequest) *response.Response
+	Register(request *model.RegisterRequest) *model.Response
 }

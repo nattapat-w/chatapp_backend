@@ -1,4 +1,10 @@
-package response
+package model
+
+type RegisterRequest struct {
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	DisplayName string `json:"displayname"`
+}
 
 type Response struct {
 	Data         interface{} `json:"data"`

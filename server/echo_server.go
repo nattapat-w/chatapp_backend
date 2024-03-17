@@ -2,13 +2,15 @@ package server
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	"github.com/nattapat-w/chatapp/config"
-	"github.com/nattapat-w/chatapp/controller"
+	"github.com/nattapat-w/chatapp/core/auth"
+	"github.com/nattapat-w/chatapp/core/user"
 	"github.com/nattapat-w/chatapp/core/user/entities"
-	"github.com/nattapat-w/chatapp/core/user/port/repository"
-	"github.com/nattapat-w/chatapp/core/user/port/service"
+
 	"gorm.io/gorm"
 )
 
@@ -31,13 +33,14 @@ func (s *fiberServer) Start() {
 	// ...
 	// order.InitializeOrderModule(s.app, s.db)
 	// userRepo := repository.NewUserRepository(db)
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("load .env error")
+	}
 
 	s.db.AutoMigrate(&entities.User{})
 
-	userRepo := repository.NewGormUserRepository(s.db)
-	userService := service.NewUserServiceImpl(userRepo)
-	userController := controller.NewUserController(userService)
-	s.app.Post("/user", userController.Register)
+	user.InitializeUserModule(s.app, s.db)
+	auth.InitializeAuthModule(s.app, s.db)
 
 	serverUrl := fmt.Sprintf(":%d", s.cfg.App.Port)
 	s.app.Listen(serverUrl)
