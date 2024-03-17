@@ -15,6 +15,6 @@ func InitializeAuthModule(app *fiber.App, db *gorm.DB) {
 	authService := service.NewAuthServiceImpl(authRepository, userRepository)
 	authController := controller.NewAuthController(authService)
 
-	authRouters := app.Group("/api/v1/auth")
+	authRouters := app.Group("/api/v1/user")
 	authRouters.Post("/login", authController.Login)
 }

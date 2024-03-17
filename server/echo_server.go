@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"github.com/nattapat-w/chatapp/config"
 	"github.com/nattapat-w/chatapp/core/auth"
@@ -36,6 +37,12 @@ func (s *fiberServer) Start() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("load .env error")
 	}
+
+	s.app.Use(cors.New(cors.Config{
+		AllowOrigins: "http://localhost:5173",
+		AllowMethods: "GET, POST, PUT, DELETE",
+		AllowHeaders: "Orgin, Content-Type, Accept",
+	}))
 
 	s.db.AutoMigrate(&entities.User{})
 
