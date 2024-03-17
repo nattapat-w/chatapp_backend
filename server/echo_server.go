@@ -39,9 +39,10 @@ func (s *fiberServer) Start() {
 	}
 
 	s.app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5173",
-		AllowMethods: "GET, POST, PUT, DELETE",
-		AllowHeaders: "Orgin, Content-Type, Accept",
+		AllowOrigins:     "http://localhost:5173",
+		AllowMethods:     "*",
+		AllowHeaders:     "Orgin, Content-Type, Accept",
+		AllowCredentials: true,
 	}))
 
 	s.db.AutoMigrate(&entities.User{})
