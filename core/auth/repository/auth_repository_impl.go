@@ -20,10 +20,11 @@ func NewGormAuthRepository(db *gorm.DB) AuthDBRepository {
 	return &GormAuthRepository{db: db}
 }
 
-func (r *GormAuthRepository) SignUserAccessToken(req *userEntity.User) (string, error) {
+func (r *GormAuthRepository) SignUserAccessToken(selectedUser *userEntity.User) (string, error) {
 	claims := authEntity.UsersClaims{
-		Id:       int(req.ID),
-		Username: req.Username,
+		Id:          int(selectedUser.ID),
+		Username:    selectedUser.Username,
+		DisplayName: selectedUser.DisplayName,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

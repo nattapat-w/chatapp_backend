@@ -4,52 +4,59 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
+	// "github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/nattapat-w/chatapp/config"
-	"github.com/nattapat-w/chatapp/core/auth"
-	"github.com/nattapat-w/chatapp/core/user"
 	"github.com/nattapat-w/chatapp/core/user/entities"
 
 	"gorm.io/gorm"
 )
 
-type fiberServer struct {
-	app *fiber.App
+type echoServer struct {
+	app *echo.Echo
 	db  *gorm.DB
 	cfg *config.Config
 }
 
-func NewFiberServer(cfg *config.Config, db *gorm.DB) Server {
-	return &fiberServer{
-		app: fiber.New(),
+func NewEchoServer(cfg *config.Config, db *gorm.DB) Server {
+	return &echoServer{
+		app: echo.New(),
 		db:  db,
 		cfg: cfg,
 	}
 }
 
-func (s *fiberServer) Start() {
-	// Initialize module(feature) here
-	// ...
-	// order.InitializeOrderModule(s.app, s.db)
-	// userRepo := repository.NewUserRepository(db)
+func (s *echoServer) Start() {
+
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("load .env error")
 	}
 
-	s.app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:5173",
-		AllowMethods:     "*",
-		AllowHeaders:     "Orgin, Content-Type, Accept",
+	// s := echo.New()
+	s.app.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 		AllowCredentials: true,
 	}))
 
+	s.app.Use(middleware.Logger())
+
 	s.db.AutoMigrate(&entities.User{})
 
-	user.InitializeUserModule(s.app, s.db)
-	auth.InitializeAuthModule(s.app, s.db)
+	// InitializeUserModule()
 
 	serverUrl := fmt.Sprintf(":%d", s.cfg.App.Port)
-	s.app.Listen(serverUrl)
+	s.app.Logger.Fatal(s.app.Start(serverUrl))
 }
+
+// func (s *echoServer) InitializeUserModule() {
+// 	userRepo := repository.NewGormUserRepository(s.db)
+// 	userService := service.NewUserServiceImpl(userRepo)
+// 	userController := user.NewUserController(userService)
+
+// 	userRouters := s.app.Group("/api/v1/user")
+// 	userRouters.POST("/register", userController.Register)
+// }

@@ -5,3 +5,8 @@ type UserDTO struct {
 	Password    string
 	DisplayName string
 }
+type UserDataDTO struct {
+	ID          uint
+	Username    string
+	DisplayName string
+}

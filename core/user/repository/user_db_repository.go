@@ -6,6 +6,7 @@ import (
 )
 
 type UserDBRepository interface {
-	CreateUser(user dto.UserDTO) error
+	CreateUser(user dto.UserDTO) (*entities.User, error)
 	FindOneUser(user dto.UserDTO) (*entities.User, error)
+	FindAllUser() ([]entities.User, error)
 }

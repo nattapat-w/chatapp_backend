@@ -3,9 +3,9 @@ package auth
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/nattapat-w/chatapp/core/auth/controller"
-	authRepo "github.com/nattapat-w/chatapp/core/auth/port/repository"
-	"github.com/nattapat-w/chatapp/core/auth/port/service"
-	userRepo "github.com/nattapat-w/chatapp/core/user/port/repository"
+	authRepo "github.com/nattapat-w/chatapp/core/auth/repository"
+	"github.com/nattapat-w/chatapp/core/auth/service"
+	userRepo "github.com/nattapat-w/chatapp/core/user/repository"
 	"gorm.io/gorm"
 )
 

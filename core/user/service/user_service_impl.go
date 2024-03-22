@@ -1,9 +1,11 @@
 package service
 
 import (
+	userEntites "github.com/nattapat-w/chatapp/core/user/entities"
+
 	"github.com/nattapat-w/chatapp/core/user/dto"
 	"github.com/nattapat-w/chatapp/core/user/model"
-	"github.com/nattapat-w/chatapp/core/user/port/repository"
+	"github.com/nattapat-w/chatapp/core/user/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -19,6 +21,13 @@ type UserServiceImpl struct {
 
 func NewUserServiceImpl(repo repository.UserDBRepository) UserService {
 	return &UserServiceImpl{repo: repo}
+}
+func (u UserServiceImpl) GetAllUser() ([]userEntites.User, error) {
+	users, err := u.repo.FindAllUser()
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
 
 func (u UserServiceImpl) Register(request *model.RegisterRequest) *model.Response {
@@ -38,7 +47,7 @@ func (u UserServiceImpl) Register(request *model.RegisterRequest) *model.Respons
 		Password:    request.Password,
 		DisplayName: request.DisplayName,
 	}
-	err = u.repo.CreateUser(userDTO)
+	createdUser, err := u.repo.CreateUser(userDTO)
 	if err != nil {
 		if err == repository.ErrDuplicateUser {
 			return u.createFailedResponse(err.Error())
@@ -46,8 +55,8 @@ func (u UserServiceImpl) Register(request *model.RegisterRequest) *model.Respons
 		return u.createFailedResponse(err.Error())
 	}
 	registerData := model.RegisterDataResponse{
-		UserName:    userDTO.Username,
-		DisplayName: userDTO.DisplayName,
+		UserName:    createdUser.Username,
+		DisplayName: createdUser.DisplayName,
 	}
 	return u.createSuccessResponse(registerData)
 }

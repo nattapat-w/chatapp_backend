@@ -5,7 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/nattapat-w/chatapp/core/auth/model"
-	"github.com/nattapat-w/chatapp/core/auth/port/service"
+	"github.com/nattapat-w/chatapp/core/auth/service"
 )
 
 type AuthController struct {

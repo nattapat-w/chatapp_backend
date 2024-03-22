@@ -2,9 +2,9 @@ package service
 
 import (
 	"github.com/nattapat-w/chatapp/core/auth/model"
-	authRepo "github.com/nattapat-w/chatapp/core/auth/port/repository"
+	authRepo "github.com/nattapat-w/chatapp/core/auth/repository"
 	"github.com/nattapat-w/chatapp/core/user/dto"
-	userRepo "github.com/nattapat-w/chatapp/core/user/port/repository"
+	userRepo "github.com/nattapat-w/chatapp/core/user/repository"
 
 	"golang.org/x/crypto/bcrypt"
 )

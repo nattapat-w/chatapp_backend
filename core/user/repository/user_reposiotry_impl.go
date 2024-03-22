@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/nattapat-w/chatapp/core/user/dto"
+	"github.com/nattapat-w/chatapp/core/user/entities"
 	userEntity "github.com/nattapat-w/chatapp/core/user/entities"
 	"gorm.io/gorm"
 )
@@ -30,20 +31,20 @@ func NewGormUserRepository(db *gorm.DB) UserDBRepository {
 	return &GormUserRepository{db: db}
 }
 
-func (r *GormUserRepository) CreateUser(user dto.UserDTO) error {
+func (r *GormUserRepository) CreateUser(user dto.UserDTO) (*entities.User, error) {
 	userEntity := convertToUserEntity(user)
 	result := r.db.Create(&userEntity)
 	if result.Error != nil {
 		if strings.Contains(result.Error.Error(), duplicateEntryMsg) {
-			return ErrDuplicateUser
+			return nil, ErrDuplicateUser
 		}
-		return result.Error
+		return nil, result.Error
 	}
 	numRows := result.RowsAffected
 	if numRows != numberRowInserted {
-		return ErrinsertUser
+		return nil, ErrinsertUser
 	}
-	return nil
+	return &userEntity, nil
 }
 func (r *GormUserRepository) FindOneUser(user dto.UserDTO) (*userEntity.User, error) {
 	selectedUser := new(userEntity.User)
@@ -55,11 +56,21 @@ func (r *GormUserRepository) FindOneUser(user dto.UserDTO) (*userEntity.User, er
 	}
 	return selectedUser, nil
 }
+func (r *GormUserRepository) FindAllUser() ([]userEntity.User, error) {
+	var users []userEntity.User
+	// err := r.db.Find(&users)
+	if err := r.db.Find(&users).Error; err != nil {
+		// log.Fatalln(err)
+		return nil, err
+	}
+	return users, nil
+}
 func convertToUserEntity(userDTO dto.UserDTO) userEntity.User {
 	// Perform conversion logic here
 	userEntity := userEntity.User{
-		Username: userDTO.Username,
-		Password: userDTO.Password,
+		Username:    userDTO.Username,
+		Password:    userDTO.Password,
+		DisplayName: userDTO.DisplayName,
 	}
 	return userEntity
 }
