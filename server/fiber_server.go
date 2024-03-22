@@ -73,16 +73,15 @@ func (s *fiberServer) Start() {
 	chatController := chat.NewChatController(chatService)
 	chatRouters := s.app.Group("/api/v1/chat")
 
-	message.StartBroadcastingMessages()
 	messageRepository := messageRepo.NewGormMessageRepository(s.db)
 	messageService := messageServ.NewMessageSerivceImpl(messageRepository)
 	messageController := message.NewMessageController(messageService)
 	messageRotuers := s.app.Group("/api/v1/message")
-	messageRotuers.Get("/ws", websocket.New(messageController.CreateMessage))
 
 	//protected
 	s.app.Use(middleware.CheckToken)
-
+	message.StartBroadcastingMessages()
+	messageRotuers.Get("/ws/:id", websocket.New(messageController.CreateMessage))
 	userRouters.Get("/users", userController.GetAllUser)
 	chatRouters.Post("/", chatController.CreateChat)
 	s.app.Get("/protected", func(c *fiber.Ctx) error {

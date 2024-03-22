@@ -1,11 +1,12 @@
 package message
 
 import (
-	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/gofiber/websocket/v2"
 	"github.com/nattapat-w/chatapp/core/message/service"
+	"github.com/nattapat-w/chatapp/core/user/dto"
 )
 
 type MessageController struct {
@@ -21,6 +22,13 @@ var broadcast = make(chan []byte)
 
 func (mc *MessageController) CreateMessage(c *websocket.Conn) {
 	// Add client to clients map
+	userData := c.Locals("userData").(*dto.UserDataDTO)
+
+	chatID, err := strconv.ParseUint(c.Params("id"), 10, 64)
+	if err != nil {
+		return
+	}
+
 	clients[c] = true
 	defer func() {
 		delete(clients, c)
@@ -33,8 +41,8 @@ func (mc *MessageController) CreateMessage(c *websocket.Conn) {
 			log.Println("Read error:", err)
 			return
 		}
-		fmt.Println(string(msg))
-		if err := mc.messageService.CreateMessage(string(msg), 1, 1); err != nil {
+
+		if err := mc.messageService.CreateMessage(string(msg), userData.ID, uint(chatID)); err != nil {
 			log.Println("Error creating message:", err)
 			return
 		}

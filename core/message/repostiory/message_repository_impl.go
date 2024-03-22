@@ -21,7 +21,7 @@ func (r *GormMessageRepository) CreateMessage(text string, userID uint, chatID u
 		UserID: userID,
 		ChatID: chatID,
 	}
-	if err := r.db.Create(&entities.Message{Text: string(text), UserID: 1, ChatID: 1}).Error; err != nil {
+	if err := r.db.Create(&entities.Message{Text: string(text), UserID: userID, ChatID: chatID}).Error; err != nil {
 		return err
 	}
 	fmt.Println(message)
