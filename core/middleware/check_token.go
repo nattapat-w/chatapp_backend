@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
@@ -11,8 +12,13 @@ import (
 
 func CheckToken(c *fiber.Ctx) error {
 	// Get token from cookie
-	cookie := c.Cookies("jwt")
-
+	var cookie string
+	cookie = c.Cookies("jwt")
+	cookie2 := c.Query("token")
+	if cookie2 != "" {
+		cookie = cookie2
+	}
+	fmt.Println(cookie)
 	if cookie == "" {
 		// Token not found
 		return c.Status(http.StatusUnauthorized).SendString("Unauthorized token not found")

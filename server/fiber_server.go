@@ -52,7 +52,7 @@ func (s *fiberServer) Start() {
 	}
 
 	s.app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:5173",
+		AllowOrigins:     "http://localhost:5173, http://127.0.0.1:5500",
 		AllowMethods:     "*",
 		AllowHeaders:     "Orgin, Content-Type, Accept",
 		AllowCredentials: true,
